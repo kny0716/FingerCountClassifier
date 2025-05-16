@@ -73,8 +73,9 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
         cv.putText(frame, f'Label: {label} | Count: {sample_count}', (10, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
         cv.imshow("Data Collection", frame)
 
-        key = cv.waitKey(1) & 0xFF2
-        if key == 27:  # ESC
+        key = cv.waitKey(10) & 0xFF
+        if key == 27 or key == ord('q'):
+            print("[INFO] 종료합니다.")
             break
         elif key == 32:  # SPACE
             if results.multi_hand_landmarks:
