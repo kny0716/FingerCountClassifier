@@ -2,7 +2,6 @@
 
 <br>
 
-## :page_facing_up: 프로젝트 개요
 
 이 프로젝트는 사람의 손 모양을 인식하여 문화권마다 다르게 표현되는 숫자 제스처를 자동으로 판별하고 시각화하는 프로그램입니다.
 
@@ -16,7 +15,50 @@
 
 ---
 
+
+## :earth_asia: 나라별 손가락 숫자 세기 방식
+
+
+#### - 중국: 1부터 5까지는 한국, 일본과 동일. 6~10은 특수한 손 모양 사용.
+
+
+![중국 손가락 숫자](https://github.com/user-attachments/assets/7301843b-dbc6-4d96-b9e1-aa327b9a841f)
+
+
+*이미지 출처: [nate 뉴스 - 중국에선 한 손으로 ‘10’까지 표현한다?](https://news.nate.com/view/20110718n23765)*  
+
+
+<br>
+
+
+#### - 일본: 1부터 5까지는 한국, 중국과 동일. 6~10은 양손을 조합하여 표현.
+
+  
+![일본 손가락 숫자](https://github.com/user-attachments/assets/cf449d0e-cec3-47c7-8efa-13a33377eac7)
+
+
+*이미지 출처: [시사일본어사 공식 블로그 - 사소하지만 궁금했던 일본 이야기](https://blog.naver.com/japansisa/222134378192)*  
+
+
+<br>
+
+
+#### - 인도: 손가락의 마디를 짚으며 숫자를 셈.
+
+  
+![인도 손가락 숫자](https://github.com/user-attachments/assets/5d0b6a5e-e1bf-47ba-9272-54308635f0f4)
+
+
+*이미지 출처: [동아일보 - 수학이 발달한 인도에선 손가락 마디로 20까지 세요](https://www.donga.com/news/Society/article/all/20200721/102097268/1)*  
+
+
+<br>
+
+
+---
+
 ## :computer: 데모 예시
+
 
 <br>
 
@@ -26,8 +68,8 @@
 ## :file_folder: 프로젝트 구조
 
 ```bash
-CulturalFingerCount/
-├── assets/                   # 국기 이미지 등 UI 요소
+FingerCountClassifier/
+├── image/                   # 국기 이미지 등 UI 요소
 │   ├── korea.png
 │   ├── china.png
 │   ├── japan.png
