@@ -4,8 +4,6 @@ import numpy as np
 import joblib
 from utils import extract_features
 
-
-# 모델 로드
 model_1hand = joblib.load("knn_model_1hand.pkl")
 model_2hand = joblib.load("knn_model_2hand.pkl")
 
@@ -35,8 +33,13 @@ label_equivalence = {
     'japan_10' : ['korea_10'],
 }
 
+flag_imgs = {
+    'korea': cv.imread('image/korea.png', cv.IMREAD_UNCHANGED),
+    'china': cv.imread('image/china.png', cv.IMREAD_UNCHANGED),
+    'japan': cv.imread('image/japan.png', cv.IMREAD_UNCHANGED),
+    'india': cv.imread('image/india.png', cv.IMREAD_UNCHANGED),
+}
 
-# 예측 결과 해석 함수
 def predict_label(model, feature_vector):
     try:
         pred = model.predict([feature_vector])[0]
@@ -44,8 +47,32 @@ def predict_label(model, feature_vector):
         return culture, number
     except:
         return None, None
+    
+def predict_label_with_threshold(model, features, threshold=50.0):
+    dist, indices = model.kneighbors([features], n_neighbors=1)
+    if dist[0][0] > threshold:
+        return None, None  # 너무 멀면 인식 불가
+    return model.predict([features])[0].split('_')
+    
+def overlay_image_alpha(background, overlay, x, y):
+    bh, bw = background.shape[:2]
+    h, w = overlay.shape[:2]
 
-# 실시간 인식
+    if x + w > bw or y + h > bh:
+        return  
+
+    if overlay.shape[2] == 4:
+        b, g, r, a = cv.split(overlay)
+        overlay_rgb = cv.merge((b, g, r))
+        mask = cv.merge((a, a, a)) / 255.0
+    else:
+        overlay_rgb = overlay
+        mask = np.ones_like(overlay, dtype=np.float32)
+
+    roi = background[y:y+h, x:x+w].astype(float)
+    blended = roi * (1 - mask) + overlay_rgb.astype(float) * mask
+    background[y:y+h, x:x+w] = blended.astype(np.uint8)
+
 cap = cv.VideoCapture(0)
 with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
     while cap.isOpened():
@@ -71,9 +98,11 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
         
         if feature_vector:
             if hand_count == 1 and len(feature_vector) == 15:
-                culture, number = predict_label(model_1hand, feature_vector)
+                # culture, number = predict_label(model_1hand, feature_vector)
+                culture, number = predict_label_with_threshold(model_1hand, feature_vector, threshold=50)
             elif hand_count == 2 and len(feature_vector) == 30:
-                culture, number = predict_label(model_2hand, feature_vector)
+                # culture, number = predict_label(model_2hand, feature_vector)
+                culture, number = predict_label_with_threshold(model_2hand, feature_vector, threshold=70)
             else:
                 culture, number = None, None
 
@@ -82,22 +111,24 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
 
                 label_key = f"{culture}_{number}"
 
-                # 해당 제스처와 의미상 동일한 라벨들
                 equivalents = label_equivalence.get(label_key, [])
                 for eq in equivalents:
                     eq_culture, eq_number = eq.split('_')
                     prediction_result[eq_culture] = eq_number
 
-        # 결과 출력
         y = 30
-        for c in culture_list:
-            text = f"{c.capitalize()}: {prediction_result[c]}"
-            cv.putText(frame, text, (10, y), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-            y += 30
+        for idx, culture in enumerate(culture_list):
 
-        cv.putText(frame, f"Hands detected: {hand_count}", (10, y), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+            flag = cv.resize(flag_imgs[culture], (40, 40))
+            overlay_image_alpha(frame, flag, x=10, y=y - 30)    
 
-        cv.imshow("Cultural Finger Counter", frame)
+            text = f"{culture.capitalize()}: {prediction_result[culture]}"
+            cv.putText(frame, text, (60, y), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+
+            y += 40
+
+        
+        cv.imshow("FingerCountClassifier", frame)
 
         key = cv.waitKey(10) & 0xFF
         if key in [27, ord('q')]:

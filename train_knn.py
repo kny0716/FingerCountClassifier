@@ -29,7 +29,6 @@ def load_dataset(filename='gesture_dataset.csv'):
     return (one_hand_X, one_hand_y), (two_hand_X, two_hand_y)
 
 
-# 모델 학습 함수
 def train_and_save_model(X, y, model_filename):
     if len(X) < 5:
         print(f"'{model_filename}' 학습 데이터가 너무 적습니다. ({len(X)}개)")
@@ -52,11 +51,7 @@ def train_and_save_model(X, y, model_filename):
 
 # 실행
 if __name__ == "__main__":
-    print("제스처 데이터셋 로딩 중...")
     (one_X, one_y), (two_X, two_y) = load_dataset()
 
-    print("한 손 모델 학습 중...")
     train_and_save_model(one_X, one_y, "knn_model_1hand.pkl")
-
-    print("두 손 모델 학습 중...")
     train_and_save_model(two_X, two_y, "knn_model_2hand.pkl")

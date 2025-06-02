@@ -10,11 +10,11 @@ def calculate_angle(a, b, c):
 def extract_features(landmarks):
     angles = []
     joint_sets = [
-        (0, 1, 2), (1, 2, 3), (2, 3, 4),    # 엄지
-        (0, 5, 6), (5, 6, 7), (6, 7, 8),    # 검지
-        (0, 9, 10), (9, 10, 11), (10, 11, 12),  # 중지
-        (0, 13, 14), (13, 14, 15), (14, 15, 16), # 약지
-        (0, 17, 18), (17, 18, 19), (18, 19, 20)  # 새끼
+        (0, 1, 2), (1, 2, 3), (2, 3, 4),    
+        (0, 5, 6), (5, 6, 7), (6, 7, 8),    
+        (0, 9, 10), (9, 10, 11), (10, 11, 12), 
+        (0, 13, 14), (13, 14, 15), (14, 15, 16), 
+        (0, 17, 18), (17, 18, 19), (18, 19, 20)  
     ]
     for j in joint_sets:
         a = [landmarks[j[0]].x, landmarks[j[0]].y]
@@ -22,3 +22,4 @@ def extract_features(landmarks):
         c = [landmarks[j[2]].x, landmarks[j[2]].y]
         angles.append(calculate_angle(a, b, c))
     return angles
+

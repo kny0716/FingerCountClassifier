@@ -8,14 +8,12 @@ from utils import extract_features
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
-
-# CSV 저장
 def save_to_csv(features, label, filename='gesture_dataset.csv'):
     with open(filename, mode='a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(features + [label])
 
-# 라벨 선택 메뉴
+# 중국 8(1이랑 자꾸 헷갈리게 나옴), 10 데이터 추가 수집 필요 
 def select_label():
     options = [
     *[f'korea_{i}' for i in range(1, 11)],
@@ -35,7 +33,6 @@ def select_label():
             pass
         print("유효하지 않은 입력입니다. 다시 입력해 주세요.")
 
-# 기존 라벨 샘플 수 카운트
 def count_existing_samples(label, filename='gesture_dataset.csv'):
     if not os.path.exists(filename):
         return 0
@@ -47,13 +44,12 @@ def count_existing_samples(label, filename='gesture_dataset.csv'):
                 count += 1
     return count
 
-# 시작
 cap = cv.VideoCapture(0)
 label = select_label()
 sample_count = count_existing_samples(label)
 
-print(f"[INFO] 스페이스바를 누르면 '{label}' 샘플이 저장됩니다. (ESC로 종료)")
-print(f"[INFO] 현재까지 저장된 {label} 샘플 수: {sample_count}")
+print(f"스페이스바를 누르면 '{label}' 샘플이 저장됩니다. (ESC로 종료)")
+print(f"현재까지 저장된 {label} 샘플 수: {sample_count}")
 
 with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
     while cap.isOpened():
@@ -75,7 +71,6 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
 
         key = cv.waitKey(10) & 0xFF
         if key == 27 or key == ord('q'):
-            print("[INFO] 종료합니다.")
             break
         elif key == 32:  # SPACE
             if results.multi_hand_landmarks:
@@ -85,9 +80,9 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
                     all_features.extend(features)
                 save_to_csv(all_features, label)
                 sample_count += 1
-                print(f"[✔] 샘플 저장됨: {label} ({sample_count})")
+                print(f"샘플 저장됨: {label} ({sample_count})")
             else:
-                print("[!] 손이 인식되지 않았습니다.")
+                print("손이 인식되지 않았습니다.")
 
 cap.release()
 cv.destroyAllWindows()
