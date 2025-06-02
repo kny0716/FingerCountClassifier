@@ -19,10 +19,12 @@
 ## :earth_asia: 나라별 손가락 숫자 세기 방식
 
 
-#### - 중국: 1부터 5까지는 한국, 일본과 동일. 6~10은 특수한 손 모양 사용.
+#### - 중국: 1부터 5까지는 한국, 일본과 동일. 6~10은 특수한 손 모양 사용. (10은 3가지 방법으로 표현함)
 
 
 ![중국 손가락 숫자](https://github.com/user-attachments/assets/7301843b-dbc6-4d96-b9e1-aa327b9a841f)
+![china_10](https://github.com/user-attachments/assets/8c1324e7-5676-4028-8eff-a5d50c0b3b5f)
+
 
 
 *이미지 출처: [nate 뉴스 - 중국에선 한 손으로 ‘10’까지 표현한다?](https://news.nate.com/view/20110718n23765)*  
