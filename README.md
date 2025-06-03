@@ -130,7 +130,8 @@ python train_knn.py
 
 ```bash
 python main.py
-# 생성된 한 손, 두 손 모델로 예측, 예측 결과가 culture가 인도라면 인도 모델로 한 번 더 예측 (좀 더 정교한 예측을 위해)
+# 생성된 한 손, 두 손 모델로 culture와 number 예측
+# 예측 결과, culture가 인도라면 인도 모델로 한 번 더 예측 (좀 더 정교한 모델)
 ```
 
 * `ESC` 키 → 종료
