@@ -79,6 +79,7 @@ FingerCountClassifier/
 ├── gesture_dataset.csv       # 수집된 손 모양 학습 데이터
 ├── knn_model_1hand.pkl       # 학습된 한 손 KNN 모델 파일
 ├── knn_model_2hand.pkl       # 학습된 두 손 KNN 모델 파일
+├── knn_model_india.pkl       # 학습된 인도 KNN 모델 파일
 ├── data_collection.py        # 손 모양 데이터 수집용 스크립트
 ├── train_knn.py              # KNN 모델 학습용 스크립트
 ├── main.py                   # 실시간 인식 실행 파일
@@ -122,12 +123,14 @@ python data_collection.py
 
 ```bash
 python train_knn.py
+# knn_model_1hand.pkl, knn_model_2hand.pkl, knn_model_india.pkl 생성
 ```
 
 #### 4. 실시간 인식 실행
 
 ```bash
 python main.py
+# 생성된 한 손, 두 손 모델로 예측, 예측 결과가 culture가 인도라면 인도 모델로 한 번 더 예측 (좀 더 정교한 예측을 위해)
 ```
 
 * `ESC` 키 → 종료
