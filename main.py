@@ -2,10 +2,11 @@ import cv2 as cv
 import mediapipe as mp
 import numpy as np
 import joblib
-from utils import extract_features
+from utils import extract_features, extract_features_india
 
 model_1hand = joblib.load("knn_model_1hand.pkl")
 model_2hand = joblib.load("knn_model_2hand.pkl")
+model_india = joblib.load("knn_model_india.pkl")
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -51,7 +52,7 @@ def predict_label(model, feature_vector):
 def predict_label_with_threshold(model, features, threshold=50.0):
     dist, indices = model.kneighbors([features], n_neighbors=1)
     if dist[0][0] > threshold:
-        return None, None  # 너무 멀면 인식 불가
+        return None, None 
     return model.predict([features])[0].split('_')
     
 def overlay_image_alpha(background, overlay, x, y):
@@ -98,19 +99,19 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
         
         if feature_vector:
             if hand_count == 1 and len(feature_vector) == 15:
-                # culture, number = predict_label(model_1hand, feature_vector)
                 culture, number = predict_label_with_threshold(model_1hand, feature_vector, threshold=50)
             elif hand_count == 2 and len(feature_vector) == 30:
-                # culture, number = predict_label(model_2hand, feature_vector)
                 culture, number = predict_label_with_threshold(model_2hand, feature_vector, threshold=70)
             else:
                 culture, number = None, None
 
+            if culture == "india":
+                feature_india = extract_features_india(results.multi_hand_landmarks[0].landmark)
+                culture, number = predict_label_with_threshold(model_india, feature_india, threshold=50)
+               
             if culture in prediction_result:
                 prediction_result[culture] = number
-
                 label_key = f"{culture}_{number}"
-
                 equivalents = label_equivalence.get(label_key, [])
                 for eq in equivalents:
                     eq_culture, eq_number = eq.split('_')
@@ -126,7 +127,6 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
             cv.putText(frame, text, (60, y), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
 
             y += 40
-
         
         cv.imshow("FingerCountClassifier", frame)
 

@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import csv
 import os
-from utils import extract_features
+from utils import extract_features ,extract_features_india
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -13,7 +13,6 @@ def save_to_csv(features, label, filename='gesture_dataset.csv'):
         writer = csv.writer(f)
         writer.writerow(features + [label])
 
-# 중국 8(1이랑 자꾸 헷갈리게 나옴), 10 데이터 추가 수집 필요 
 def select_label():
     options = [
     *[f'korea_{i}' for i in range(1, 11)],
@@ -64,6 +63,7 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
         hand_counst = len(results.multi_hand_landmarks) if results.multi_hand_landmarks else 0
         cv.putText(frame, f'Hands: {hand_counst}', (10, 50), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255,0,0), 2)
         cv.putText(frame, f'Label: {label} | Count: {sample_count}', (10, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
@@ -76,7 +76,10 @@ with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5) as hands:
             if results.multi_hand_landmarks:
                 all_features = []
                 for hand in results.multi_hand_landmarks:
-                    features = extract_features(hand.landmark)
+                    if label.startswith('india'):
+                        features = extract_features_india(hand.landmark)
+                    else:
+                        features = extract_features(hand.landmark)
                     all_features.extend(features)
                 save_to_csv(all_features, label)
                 sample_count += 1

@@ -6,11 +6,10 @@ from sklearn.metrics import accuracy_score
 import joblib
 from collections import Counter
 
-
-# CSV 로드 함수
 def load_dataset(filename='gesture_dataset.csv'):
     one_hand_X, one_hand_y = [], []
     two_hand_X, two_hand_y = [], []
+    india_X, india_y = [], []
 
     with open(filename, newline='') as f:
         reader = csv.reader(f)
@@ -19,15 +18,19 @@ def load_dataset(filename='gesture_dataset.csv'):
                 continue
             features = list(map(float, row[:-1]))
             label = row[-1]
+
             if len(features) == 15:
                 one_hand_X.append(features)
                 one_hand_y.append(label)
             elif len(features) == 30:
-                two_hand_X.append(features)
-                two_hand_y.append(label)
+                if label.startswith("india_"):
+                    india_X.append(features)
+                    india_y.append(label)
+                else:
+                    two_hand_X.append(features)
+                    two_hand_y.append(label)
 
-    return (one_hand_X, one_hand_y), (two_hand_X, two_hand_y)
-
+    return (one_hand_X, one_hand_y), (two_hand_X, two_hand_y), (india_X, india_y)
 
 def train_and_save_model(X, y, model_filename):
     if len(X) < 5:
@@ -49,9 +52,9 @@ def train_and_save_model(X, y, model_filename):
     joblib.dump(model, model_filename)
     print(f"모델 저장됨: {model_filename}\n")
 
-# 실행
 if __name__ == "__main__":
-    (one_X, one_y), (two_X, two_y) = load_dataset()
+    (one_X, one_y), (two_X, two_y), (india_X, india_y) = load_dataset()
 
     train_and_save_model(one_X, one_y, "knn_model_1hand.pkl")
     train_and_save_model(two_X, two_y, "knn_model_2hand.pkl")
+    train_and_save_model(india_X, india_y, "knn_model_india.pkl")
