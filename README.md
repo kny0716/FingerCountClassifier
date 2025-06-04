@@ -62,6 +62,12 @@
 ## :computer: 데모 예시
 
 
+
+https://github.com/user-attachments/assets/05a3094b-ce35-4925-9429-7a8e40158462
+
+
+
+
 <br>
 
 ---
